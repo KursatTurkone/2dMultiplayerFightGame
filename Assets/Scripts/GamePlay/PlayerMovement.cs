@@ -6,7 +6,7 @@ public class PlayerMovement : NetworkBehaviour
     public float gravityForce = 10f;
     public float speed = 5f;
     private Rigidbody2D rb;
-    [SerializeField] private GameObject character; // Character GameObject'i
+    [SerializeField] private GameObject character; 
     private Vector2 movement;
     private Camera mainCamera;
 
@@ -23,50 +23,41 @@ public class PlayerMovement : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
-
-        // Hareket girişlerini al
+        
         float moveX = Input.GetAxis("Horizontal");
         movement = new Vector2(moveX, 0);
 
-        // Karakterin yönünü değiştir
         if (moveX > 0 && characterDirection.Value != 1)
         {
-            UpdateCharacterDirectionServerRpc(1); // Sağ tarafa bak
+            UpdateCharacterDirectionServerRpc(1);
         }
         else if (moveX < 0 && characterDirection.Value != -1)
         {
-            UpdateCharacterDirectionServerRpc(-1); // Sol tarafa bak
+            UpdateCharacterDirectionServerRpc(-1); 
         }
     }
 
     private void FixedUpdate()
     {
         if (!IsOwner) return;
-
-        // Hareket verilerini sunucuya gönder
         SubmitMovementServerRpc(movement * speed * Time.fixedDeltaTime);
     }
 
     [ServerRpc]
     private void SubmitMovementServerRpc(Vector2 movement)
     {
-        // Yereçekimi kuvvetini ekliyoruz
+    
         Vector2 gravity = new Vector2(0, -gravityForce * Time.fixedDeltaTime);
 
-        // Karakterin yeni pozisyonunu hesapla
         Vector2 newPosition = rb.position + movement + gravity;
 
-        // Yeni pozisyonu ayarla
         rb.MovePosition(newPosition);
 
-        // Ekran sınırlarını kontrol et ve karakteri sınırlandır
         Vector3 pos = transform.position;
 
-        // Kameranın sol alt ve sağ üst köşelerinin dünya koordinatları
         Vector3 bottomLeft = mainCamera.ScreenToWorldPoint(new Vector3(0, 0, mainCamera.nearClipPlane));
         Vector3 topRight = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.nearClipPlane));
 
-        // Karakteri ekran sınırları içinde tut
         pos.x = Mathf.Clamp(pos.x, bottomLeft.x, topRight.x);
         transform.position = pos;
     }
@@ -85,11 +76,11 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (newDirection > 0)
         {
-            character.transform.localScale = new Vector3(1, 1, 1); // Sağ tarafa bak
+            character.transform.localScale = new Vector3(1, 1, 1); 
         }
         else if (newDirection < 0)
         {
-            character.transform.localScale = new Vector3(-1, 1, 1); // Sol tarafa bak
+            character.transform.localScale = new Vector3(-1, 1, 1); 
         }
     }
 }

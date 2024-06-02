@@ -65,11 +65,8 @@ public class CharacterHealth : NetworkBehaviour
 
     private void OnDie()
     {
-        // Ölen oyuncuyu sunucudan at
         ulong clientId = OwnerClientId;
         NetworkManager.Singleton.DisconnectClient(clientId);
-
-        // Örneğin, karakteri sahneden kaldırmak gibi başka işlemler yapılabilir
         gameObject.SetActive(false);
     }
 

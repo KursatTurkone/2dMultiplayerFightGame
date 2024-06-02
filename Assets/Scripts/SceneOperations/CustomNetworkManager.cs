@@ -17,7 +17,7 @@ public class CustomNetworkManager : MonoBehaviour
 
     private void OnServerStarted()
     {
-        // Sunucu başlatıldığında yapılacak işlemler
+   
         playerCount = 0;
     }
 
